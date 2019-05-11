@@ -1,0 +1,79 @@
+<html>  
+    <canvas id="canvas">
+        </canvas>
+        <script>
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext('2d');
+            let width = canvas.width = 800;
+            let height = canvas.height = 600;
+            let ballx = 400;
+            let bally = 300;
+            let ballSpeedx = 15;
+            let ballSpeedy = 3;
+            const FPS = 1000 / 30;
+            let paddleWidth = 20;
+            let paddleHeight = 200;
+            let paddley = 300;
+
+
+
+            function moveBall(){
+               
+               if(ballx > width || ballx < 0){
+                   ballSpeedx *= -1;
+               }
+
+               if (bally > height || bally < 0){
+                   ballSpeedy *= -1;
+               }
+                bally += ballSpeedy
+                ballx += ballSpeedx;
+            }
+
+            function drawRect(startx, starty, width, height, color){
+                context.fillStyle = color;
+                 context.fillRect(startx, starty, width, height);
+            }
+
+            function drawCircle(centerX, centerY, radius, color){
+                context.fillStyle = color;
+                context.beginPath();
+                context.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+                context.fill();
+            }
+
+            function updateAll(){
+                drawRect(0, 0, width, height, 'black');
+                drawRect(10, paddley, paddleWidth, paddleHeight, 'red');
+                drawCircle(ballx, bally, 10, 'white');
+                moveBall();
+            }
+
+            
+
+
+            function calculateMousePosition(event){
+                let rect = canvas.getBoundingClientRect(), root = document.documentElement;
+
+                let mousex = event.clientX - rect.left - root.scrollLeft;
+                let mousey = event.clientY - rect.top - root.scrollTop;
+                return {
+                    x: mousex,
+                    y: mousey
+                };
+            }
+            window.onload = function () {
+                console.log(canvas);
+                 setInterval(function(){updateAll() }, FPS);
+                
+                canvas.addEventListener('mousemove', function(event){
+                    let mousePosition = calculateMousePosition(event);
+                    paddley = mousePosition.y;
+                })
+
+            }
+            
+
+        </script>
+    
+</html>
