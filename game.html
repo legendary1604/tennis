@@ -13,23 +13,46 @@
             const FPS = 1000 / 30;
             let paddleWidth = 20;
             let paddleHeight = 200;
-            let paddley = 300;
+            let paddle1y = 250;
+            let paddle2y = 250;
+            let paddle1x = 10;
+            let paddle2x = canvas.width - 10;
 
+            function ballReset(){
+                ballSpeedx = -ballSpeedx;
+                ballx = canvas.width/2;
+                bally = canvas.height/2;
+            }
 
 
             function moveBall(){
+               ballx = ballx + ballSpeedx;
+               bally =bally + ballSpeedy;
+               if(ballx < 0){
+                   if(bally > paddle1y &&
+                   bally < paddle1y+paddleHeight) {
+                       ballSpeedx = -ballSpeedx;
+                   } else {
+                       ballReset();
+                   }
+               }
+                    if(ballx > canvas.width) {
+                        if(bally > paddle2y &&
+                        bally < paddle2y+paddleHeight) {
+                        ballSpeedx = -ballSpeedx;
+                        } else {
+                            ballReset();
+                        
+                        }
+                    }
+                    if(bally < 0) {
+                        ballSpeedy = -ballSpeedy;
+                    }
+                    if (bally > canvas.height) {
+                        ballSpeedy = -ballSpeedy;
+                    }
                
-               if(ballx > width || ballx < 0){
-                   ballSpeedx *= -1;
-               }
-
-               if (bally > height || bally < 0){
-                   ballSpeedy *= -1;
-               }
-                bally += ballSpeedy
-                ballx += ballSpeedx;
             }
-
             function drawRect(startx, starty, width, height, color){
                 context.fillStyle = color;
                  context.fillRect(startx, starty, width, height);
@@ -41,12 +64,28 @@
                 context.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
                 context.fill();
             }
+            function computerMovement(){
+                let paddle2yCenter = paddle2y + (paddleHeight/2);
+                if(paddle2yCenter < bally -35) {
+                    paddle2y = paddle2y + 6; 
+                } else if(paddle2yCenter > bally + 35) {
+                    paddle2y = paddle2y - 6;
+                }
+             }
+
+            
+
+            
 
             function updateAll(){
                 drawRect(0, 0, width, height, 'black');
-                drawRect(10, paddley, paddleWidth, paddleHeight, 'red');
+                drawRect(paddle1x, paddle1y, paddleWidth, paddleHeight, 'red')
+                drawRect(paddle2x, paddle2y, paddleWidth, paddleHeight, 'red');
                 drawCircle(ballx, bally, 10, 'white');
                 moveBall();
+                computerMovement();
+
+
             }
 
             
@@ -68,7 +107,7 @@
                 
                 canvas.addEventListener('mousemove', function(event){
                     let mousePosition = calculateMousePosition(event);
-                    paddley = mousePosition.y;
+                    paddle1y = mousePosition.y - paddleHeight/2;
                 })
 
             }
